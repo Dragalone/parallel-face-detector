@@ -61,7 +61,7 @@ public class MainWindowController implements Initializable {
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 14);
         valueFactory.setValue(1);
         threadSpinner.setValueFactory(valueFactory);
-        outputDataButton.setDisable(true);
+        initialDataButton.setDisable(true);
     }
 
     @FXML
