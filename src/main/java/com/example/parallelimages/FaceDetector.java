@@ -19,41 +19,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class FaceDetector {
-    public static List<String> listFilesForFolder(final File folder) {
-        List<String> fileNames = new ArrayList<>();
-        for (final File fileEntry : Objects.requireNonNull(folder.listFiles())) {
-            if (fileEntry.isDirectory()) {
-                listFilesForFolder(fileEntry);
-            } else {
-                fileNames.add(fileEntry.getPath());
-            }
-        }
-        return fileNames;
-    }
-    private static void removeDirectory(File dir) {
-        if (dir.isDirectory()) {
-            File[] files = dir.listFiles();
-            if (files != null && files.length > 0) {
-                for (File aFile : files) {
-                    removeDirectory(aFile);
-                }
-            }
-            dir.delete();
-        } else {
-            dir.delete();
-        }
-    }
-    private static void cleanDirectory(File dir) {
-        if (dir.isDirectory()) {
-            File[] files = dir.listFiles();
-            if (files != null && files.length > 0) {
-                for (File aFile : files) {
-                    removeDirectory(aFile);
-                }
-            }
-        }
-    }
-
     private static List<List<String>> assignTasks(List<String> imagePaths, int threadsCount){
         int partitionSize = imagePaths.size() / threadsCount;
         int firstCycleLimit = partitionSize * threadsCount;
@@ -110,11 +75,12 @@ public class FaceDetector {
     }
 
 
-    public List<MatOfRect> detect(int threadsCount) {
+    public void detect(int threadsCount) {
+        System.out.println("Detecting in " + threadsCount + " threads");
         final File folder = new File("./src/main/resources/images/input");
-        cleanDirectory(new File("./src/main/resources/images/output/"));
+        FileUtils.cleanDirectory(new File("./src/main/resources/images/output/"));
         // Загрузка изображений
-        List<String> imagePaths = listFilesForFolder(folder); // Список путей к изображениям
+        List<String> imagePaths = FileUtils.listFilesForFolder(folder); // Список путей к изображениям
 
         threadsCount = Math.min(threadsCount, imagePaths.size());
 
@@ -135,8 +101,6 @@ public class FaceDetector {
             }
         }
         long t = System.nanoTime() - t0;
-        System.out.println(t / 1e9 + " Seconds required to solve this problem");
-        return null;
-        // ...  Дополнительная обработка результатов (например, отрисовка прямоугольников на изображениях) ...
+        System.out.println(t / 1e9 + " seconds required to detect faces");
     }
 }
