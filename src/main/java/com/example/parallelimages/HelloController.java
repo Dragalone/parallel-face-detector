@@ -17,7 +17,7 @@ public class HelloController {
     @FXML
     protected void onHelloButtonClick() {
         FaceDetector faceDetector = new FaceDetector();
-        List<MatOfRect> list = faceDetector.detect(3);
+        List<MatOfRect> list = faceDetector.detect(5);
         String str = "nothing(";
         if (list != null){
             str = Integer.toString(list.size());
