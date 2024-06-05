@@ -16,6 +16,7 @@ public class ParallelImagesApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(ParallelImagesApplication.class.getResource("main-window.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
+        stage.resizableProperty().setValue(false);
         stage.setTitle("Face detector");
         stage.setScene(scene);
         stage.show();

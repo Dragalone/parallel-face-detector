@@ -17,9 +17,19 @@ import java.util.*;
 
 public class MainWindowController implements Initializable {
 
-    private final File folder = new File("./src/main/resources/images/input");
+    private final File inputFolder = new File("./src/main/resources/images/input");
+
+    private final File outputFolder = new File("./src/main/resources/images/output");
 
     private List<Image> images = new ArrayList<>();
+
+    private boolean isInputState = true;
+
+    @FXML
+    private Button initialDataButton;
+
+    @FXML
+    private Button outputDataButton;
 
     @FXML
     private ListView<String> myListView;
@@ -35,7 +45,7 @@ public class MainWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        updateForm();
+        updateForm(inputFolder);
         myListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
@@ -51,6 +61,7 @@ public class MainWindowController implements Initializable {
                 new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 14);
         valueFactory.setValue(1);
         threadSpinner.setValueFactory(valueFactory);
+        outputDataButton.setDisable(true);
     }
 
     @FXML
@@ -65,17 +76,38 @@ public class MainWindowController implements Initializable {
 
     @FXML
     protected void onUpdateButtonClick() {
-        updateForm();
+        if (isInputState) {
+            updateForm(inputFolder);
+        } else {
+            updateForm(outputFolder);
+        }
     }
 
-    private void updateForm(){
+    private void updateForm(File folder){
         List<String> imagesPathsList = FileUtils.listFilesForFolder(folder);
         List<String> imageNames = new ArrayList<>();
+        images.clear();
         for(var imagePath : imagesPathsList){
             File file = new File(imagePath);
             imageNames.add(file.getName());
             images.add(new Image(file.toURI().toString()));
         }
         myListView.getItems().setAll(imageNames);
+    }
+
+    @FXML
+    protected void onInitialDataClick() {
+        outputDataButton.setDisable(false);
+        initialDataButton.setDisable(true);
+        isInputState = true;
+        updateForm(inputFolder);
+    }
+
+    @FXML
+    protected void onOutputDataClick() {
+        outputDataButton.setDisable(true);
+        initialDataButton.setDisable(false);
+        isInputState = false;
+        updateForm(outputFolder);
     }
 }
